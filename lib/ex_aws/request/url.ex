@@ -38,6 +38,8 @@ defmodule ExAws.Request.Url do
     # the above error is happening because the path doesn't have a slash at the beginning.
     if update_url.path != "" and hd(String.split(updated_url.path, "/") != "") do
       Map.put(updated_url, :path, "/" <> updated_url.path)
+    else
+      updated_url
     end
   end
 
