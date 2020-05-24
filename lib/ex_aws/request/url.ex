@@ -4,7 +4,11 @@ defmodule ExAws.Request.Url do
   @doc """
   Builds URL for an operation and a config"
   """
+  require Logger
+
   def build(operation, config) do
+    Logger.debug("chekcing in build #{inspect(operation)}")
+    Logger.debug("checking the confi #{inspect(config)}")
     config
     |> Map.take([:scheme, :host, :port])
     |> Map.put(:query, query(operation))
