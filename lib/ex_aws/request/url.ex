@@ -4,11 +4,8 @@ defmodule ExAws.Request.Url do
   @doc """
   Builds URL for an operation and a config"
   """
-  require Logger
 
   def build(operation, config) do
-    Logger.debug("chekcing in build #{inspect(operation)}")
-    Logger.debug("checking the confi #{inspect(config)}")
     config
     |> Map.take([:scheme, :host, :port])
     |> Map.put(:query, query(operation))
@@ -33,8 +30,15 @@ defmodule ExAws.Request.Url do
   end
 
   defp normalize_path(url, false), do: url
+
   defp normalize_path(url, _normalize) do
-    url |> Map.update(:path, "", &String.replace(&1, ~r/\/{2,}/, "/"))
+    updated_url = url |> Map.update(:path, "", &String.replace(&1, ~r/\/{2,}/, "/"))
+
+    # fixed the error -> :path in URI must be nil or an absolute path if :host or :authority are given.
+    # the above error is happening because the path doesn't have a slash at the beginning.
+    if update_url.path != "" and hd(String.split(updated_url.path, "/") != "") do
+      Map.put(updated_url, :path, "/" <> updated_url.path)
+    end
   end
 
   defp convert_port_to_integer(url = %{port: port}) when is_binary(port) do
