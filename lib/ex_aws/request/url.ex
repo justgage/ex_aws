@@ -36,7 +36,7 @@ defmodule ExAws.Request.Url do
 
     # fixed the error -> :path in URI must be nil or an absolute path if :host or :authority are given.
     # the above error is happening because the path doesn't have a slash at the beginning.
-    if updated_url.path != "" and hd(String.split(updated_url.path, "/") != "") do
+    if updated_url.path != "" and hd(String.split(updated_url.path, "/")) != "" do
       Map.put(updated_url, :path, "/" <> updated_url.path)
     else
       updated_url
